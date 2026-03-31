@@ -1,0 +1,26 @@
+stages:
+  - build
+  - docker
+  - push
+  - deploy
+
+build:
+  stage: build
+  image: mcr.microsoft.com/dotnet/sdk:8.0
+  script:
+    - dotnet restore TestApi
+    - dotnet build TestApi --configuration Release
+
+docker-build:
+  stage: docker
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t testapi ./TestApi
+
+deploy:
+  stage: deploy
+  script:
+    - kubectl apply -f k8s/deployment.yaml
+    - kubectl apply -f k8s/service.yaml
