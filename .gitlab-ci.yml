@@ -4,6 +4,9 @@ stages:
   - push
   - deploy
 
+variables:
+  IMAGE_NAME: $CI_REGISTRY_IMAGE
+
 build:
   stage: build
   image: mcr.microsoft.com/dotnet/sdk:8.0
@@ -17,7 +20,16 @@ docker-build:
   services:
     - docker:dind
   script:
-    - docker build -t testapi ./TestApi
+    - docker build -t $IMAGE_NAME:$CI_COMMIT_SHA ./TestApi
+
+docker-push:
+  stage: push
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+    - docker push $IMAGE_NAME:$CI_COMMIT_SHA
 
 deploy:
   stage: deploy
