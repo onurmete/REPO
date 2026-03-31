@@ -2,6 +2,11 @@ stages:
   - build
   - docker
 
+variables:
+  # GitLab'ın sana özel sunduğu hazır değişkenler
+  IMAGE_NAME: $CI_REGISTRY_IMAGE:latest
+  DOCKER_TLS_CERTDIR: ""
+
 # -----------------------------
 # 1️⃣ .NET Build Stage
 # -----------------------------
@@ -10,12 +15,16 @@ build:
   image: mcr.microsoft.com/dotnet/sdk:8.0
   script:
     - echo "Restoring .NET dependencies..."
-    - dotnet restore TestApi
+    - dotnet restore TestApi/TestApi.csproj
     - echo "Building .NET project..."
-    - dotnet build TestApi --configuration Release
+    - dotnet build TestApi/TestApi.csproj --configuration Release --no-restore
+  artifacts:
+    paths:
+      - TestApi/bin/Release/net8.0/
+    expire_in: 1 hour
 
 # -----------------------------
-# 2️⃣ Docker Build Stage
+# 2️⃣ Docker Build & Push Stage
 # -----------------------------
 docker-build:
   stage: docker
@@ -23,5 +32,12 @@ docker-build:
   services:
     - docker:dind
   script:
-    - echo "Building Docker image..."
-    - docker build -t testapi ./TestApi
+    - echo "Logging into GitLab Container Registry..."
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    
+    - echo "Building and Tagging Docker image..."
+    # İmajı GitLab Registry adresiyle build ediyoruz
+    - docker build -t $IMAGE_NAME ./TestApi
+    
+    - echo "Pushing image to GitLab Registry..."
+    - docker push $IMAGE_NAME
