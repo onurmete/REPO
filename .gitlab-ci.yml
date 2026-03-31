@@ -2,17 +2,26 @@ stages:
   - build
   - docker
 
+# -----------------------------
+# 1️⃣ .NET Build Stage
+# -----------------------------
 build:
   stage: build
   image: mcr.microsoft.com/dotnet/sdk:8.0
   script:
+    - echo "Restoring .NET dependencies..."
     - dotnet restore TestApi
+    - echo "Building .NET project..."
     - dotnet build TestApi --configuration Release
 
+# -----------------------------
+# 2️⃣ Docker Build Stage
+# -----------------------------
 docker-build:
   stage: docker
   image: docker:latest
   services:
     - docker:dind
   script:
-    - docker build -t $IMAGE_NAME:$CI_COMMIT_SHA ./TestApi
+    - echo "Building Docker image..."
+    - docker build -t testapi ./TestApi
