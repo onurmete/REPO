@@ -4,22 +4,7 @@ Bu proje, basit bir .NET 8 REST API uygulamasının Docker ile containerize edil
 
 ## 🚀 Proje Yapısı
 
-project-root/
-│
-├── TestApi/
-│ ├── Program.cs
-│ ├── Dockerfile
-│ └── TestApi.csproj
-│
-├── k8s/
-│ ├── deployment.yaml
-│ └── service.yaml
-│
-├── .gitlab-ci.yml
-└── README.md
-
-
----
+<img width="303" height="296" alt="image" src="https://github.com/user-attachments/assets/82b011db-ff61-44b5-ab6a-5535875fc87c" />
 
 ## 🧱 Uygulama Hakkında
 
