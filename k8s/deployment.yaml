@@ -12,9 +12,12 @@ spec:
       labels:
         app: myapi
     spec:
+      imagePullSecrets:
+      - name: gitlab-secret
       containers:
       - name: myapi
-        image: testapi:latest
+        image: registry.gitlab.com/onurmete/repo:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         readinessProbe:
