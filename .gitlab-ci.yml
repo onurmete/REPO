@@ -3,7 +3,6 @@ stages:
   - docker
 
 variables:
-  # GitLab'ın sana özel sunduğu hazır değişkenler
   IMAGE_NAME: $CI_REGISTRY_IMAGE:latest
   DOCKER_TLS_CERTDIR: ""
 
